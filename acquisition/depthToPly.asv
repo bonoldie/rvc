@@ -1,0 +1,34 @@
+clear all;
+clc;
+
+syms u v ku kv z x y;
+
+% primesense carmine internals
+f = 525;
+u0 = 319.5;
+v0 = 239.5;
+
+img = imread("data/0000001-000000000000.png");
+
+rayEq1 = u == ku * (-f/z)*x + u0;
+rayEq2 = v == kv * (-f/z)*y + v0;
+
+rayEq1 = subs(rayEq1, ku, 1);
+rayEq2 = subs(rayEq2, kv, 1);
+
+
+
+pc = zeros(size(img, 1),size(img, 2), 3);
+
+for i = 1:size(img, 1)
+    for j = 1:size(img, 2)
+        x = -(img(i, j)*(i- ))
+        sol = solve([subs(rayEq1, u,i),subs(rayEq2, v,j)], [x, y]);
+        pc(i, j, 1) = subs(sol.x, z, [img(i, j)]);
+        pc(i, j ,2) = subs(sol.y, z, [img(i, j)]);
+        pc(i, j, 3) = img(i, j);   
+        display(i);
+        display(j);
+    end
+end
+
