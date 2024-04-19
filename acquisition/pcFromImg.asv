@@ -33,14 +33,18 @@ end
 
 pc = pointCloud([vec(pc(:,:,1)),vec(pc(:,:,2)), vec(pc(:,:,3))]);
 
-pcRegion = pc.sele(pc.Location(:,1) ~= 0);
-pc.Location = pc.select(pc.Location(:,2) ~= 0);
-pc.Location = pc.select(pc.Location(:,3) ~= 0);
+pcRegion = pc.select(pc.Location(:,1) ~= 0);
 
-pcDownSampled = pcdownsample(pc,"gridAverage",40);
+pcRegion = pc.select(pc.Location(:,1) ~= 0 & abs(pc.Location(:, 1)) < 2000);
+pcRegion = pcRegion.select(pcRegion.Location(:,2) ~= 0 & abs(pcRegion.Location(:, 2)) < 2000);
+pcRegion = pcRegion.select(pcRegion.Location(:,3) ~= 0 & abs(pcRegion.Location(:, 3)) < 2000);
+
+%pcshow(pcRegion);
+
+pcDownSampled = pcdownsample(pcRegion,"gridAverage",10);
 
 pcshow(pcDownSampled);
 
-mesh = pc2surfacemesh(pc,"ball-pivot");
+mesh = pc2surfacemesh(pcDownSampled,"ball-pivot",30);
 surfaceMeshShow(mesh);
 
