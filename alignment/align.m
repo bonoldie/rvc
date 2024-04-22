@@ -6,7 +6,7 @@ dirContent = dir("depth");
 depthImages = sort(extractfield(dirContent,"name"));
 intr = cameraIntrinsics([525 525],[319.5 239.5],[480 640]);
 
-selectedImagesIdx = 3:120:(120*3)+3;
+selectedImagesIdx = 3:1:7;
 selectedImages = depthImages(selectedImagesIdx);
 images = {};
 
