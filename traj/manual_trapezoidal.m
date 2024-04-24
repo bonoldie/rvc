@@ -2,35 +2,34 @@ close all;
 clear all;
 clc;
 
-syms a0 a1 a2 b0 b1 c0 c1 c2 t 
+syms a0 a1 a2 b0 b1 c0 c1 c2 t ti tf qi qf
 assume([a0 a1 a2 b0 b1 c0 c1 c2], 'real');
 
-ti=0;
-tf=5;
+%ti=0;
+%tf=5;
 
-qi=5;
-qf=6;
+%qi=5;
+%qf=6;
 
 %vmax=2;
 
-
 %acceleration
 
-q(t)=a0+a1*t+a2*t^2
-q1(t)=diff(q,t)
-q2(t)=diff(q1,t)
+q(t)=a0+a1*t+a2*t^2;
+q1(t)=diff(q,t);
+q2(t)=diff(q1,t);
 
 %constant vel
 
-g(t)=b0+b1*t
-g1(t)=diff(g,t)
-g2(t)=diff(g1,t)
+g(t)=b0+b1*t;
+g1(t)=diff(g,t);
+g2(t)=diff(g1,t);
 
 %deceleration
 
-f(t)=c0+c1*t+c2*t^2
-f1(t)=diff(f,t)
-f2(t)=diff(f1,t)
+f(t)=c0+c1*t+c2*t^2;
+f1(t)=diff(f,t);
+f2(t)=diff(f1,t);
 
 %change this value to enlarge constant velocity
 tc=(tf-ti)/4;   %tc<=(tf-ti)/2
@@ -42,6 +41,7 @@ eqns=[q(ti)==qi, f(tf)==qf, q(tc)==g(tc), g(tf-tc)==f(tf-tc), ...
     q1(ti)==0, f1(tf)==0, q1(tc)==g1(tc), g1(tf-tc)==f1(tf-tc) ];
 
 s=solve(eqns,[a0 a1 a2 b0 b1 c0 c1 c2])
+
 
 %%
 P=subs(q(t),[a0,a1,a2],[s.a0,s.a1,s.a2]);
@@ -56,6 +56,9 @@ P2=subs(f(t),[c0,c1,c2],[s.c0,s.c1,s.c2]);
 V2=subs(f1(t),[c0,c1,c2],[s.c0,s.c1,s.c2]);
 A2=subs(f2(t),[c0,c1,c2],[s.c0,s.c1,s.c2]);
 
+
+pretty_equation(P2);
+%%
 acc_range=linspace(ti,tc,100);
 constant_range=linspace(tc,tf-tc,100);
 dec_range=linspace(tf-tc,tf,100);

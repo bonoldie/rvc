@@ -14,7 +14,7 @@ end
 
 threshold = graythresh(originalImg);
 binImg = imbinarize(originalImg, threshold);
-
+    
 binImg = bwareaopen(binImg, 1000);
 connComps = bwconncomp(binImg, 8);
 regionprops("table", connComps, "MajorAxisLength", "MinorAxisLength", "Centroid", "Area")
@@ -41,11 +41,12 @@ imshow(originalImg);
 hold on;
 title("Analysis result");
 
+plot(compsCentroids(:, 1), compsCentroids(:, 2), ".", "MarkerSize", 25);
+
 for i = 1:connComps.NumObjects
-    plot(compsCentroids(:, 1), compsCentroids(:, 2), ".", "MarkerSize", 25);
     text(compsCentroids(i, 1), compsCentroids(i, 2), num2str(" " + i), "FontSize", 25);
 
-    if connCompsProps(i).Eccentricity < 0.
+    if connCompsProps(i).Eccentricity < 0.5
         % circle case
         viscircles(compsCentroids(i, :), compsRadiuses(i, :));
     else

@@ -43,8 +43,11 @@ pcRegion = pcRegion.select(pcRegion.Location(:,3) ~= 0 & abs(pcRegion.Location(:
 
 pcDownSampled = pcdownsample(pcRegion,"gridAverage",10);
 
+
+%% 
+
 %pcshow(pcDownSampled);
 
-mesh = pc2surfacemesh(pcDownSampled,"ball-pivot",30);
-surfaceMeshShow(mesh);
+%mesh = pc2surfacemesh(pcDownSampled,"ball-pivot",30);
+%surfaceMeshShow(mesh);
 
