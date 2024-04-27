@@ -173,7 +173,7 @@ lineModels = cell(1,boundaryLines);
 
 for i=1:1:boundaryLines
     % runs RANSAC on a subset of the boudary points
-    [lineModel, inliersIdx] = ransac(pcBoundarySubset.Location,fitLineFcn,evalLineFcn, 10, 100);
+    [lineModel, inliersIdx] = ransac(pcBoundarySubset.Location,fitLineFcn,evalLineFcn, 8, 100);
     lineModels{i} = lineModel;
     
     if i == 1
@@ -188,9 +188,30 @@ pause(0.5);
 hold on;
 pcshow(pcBoundary);
 
-for i=1:1:size(lineModels,2)
+for i=1:1:size(lineModels, 2)
     PlotLineModel(lineModels{i});
 end
+
+
+linesCombinations = 1:boundaryLines;
+linesCombinations = nchoosek(linesCombinations,2);
+
+angles = zeros(size(linesCombinations, 1),1);
+
+for i=1:size(linesCombinations, 1)
+    angles(i)=AngleBetweenLines(lineModels{linesCombinations(i,1)},lineModels{linesCombinations(i,2)});
+end
+
+[sortedAngles, sortAnglesIdx] = sort(angles, 'descend');
+
+anglePoints = zeros(boundaryLines, 3);
+
+for i=1:boundaryLines
+    anglePoints(i,:) = LinesIntersection(lineModels{linesCombinations(sortAnglesIdx(i),1)}, lineModels{linesCombinations(sortAnglesIdx(i),2)}) ;
+end
+
+scatter3(anglePoints(:,1),anglePoints(:,2),anglePoints(:,3), 'filled', 'LineWidth', 20);
+
 
 function distances = ModelEval(model, points)
     distances = zeros(size(points,1),1);
@@ -200,9 +221,9 @@ function distances = ModelEval(model, points)
     end
 
     %disp(min(distances));
-
     %figure(10);
     %pause(0.5);
     %pcshow(pointCloud(points));
     %quiver3(model.Origin(1,1),model.Origin(1,2),model.Origin(1,3), model.Normal(1), model.Normal(2), model.Normal(3), "filled", "LineWidth",3,"AutoScaleFactor", 100 );
 end
+

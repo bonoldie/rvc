@@ -1,0 +1,7 @@
+function interPoint = LinesIntersection(lineModelA, lineModelB)
+    syms pa pb mua mub;
+    solve([pa == lineModelA.Origin + mua],[mua mub]);
+
+    interPoint = [0 0 0];
+end
+
