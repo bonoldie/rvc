@@ -165,11 +165,12 @@ quiver3(lineModel.Origin(1),lineModel.Origin(2),lineModel.Origin(3), lineModel.N
 fitLineFcn = @(points) LineFitting3D(points);
 evalLineFcn =  @(model, points) ModelEval(model, points);
 
-% a smart initial choice must be done
 pcBoundarySubset = pcBoundary.select(pcBoundary.Location(:, 1) > centroidLocation(1));
 
-boundaryLines = 4;
+boundaryLines = 3;
+
 lineModels = cell(1,boundaryLines);
+
 
 for i=1:1:boundaryLines
     % runs RANSAC on a subset of the boudary points
@@ -181,7 +182,11 @@ for i=1:1:boundaryLines
     else
         pcBoundarySubset = pointCloud(setdiff(pcBoundarySubset.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));    
     end
+   %pcBoundary = pcBoundarySubset;
 end
+
+% runs RANSAC on all the boudary points
+%[model, inliersIdx] = ransac(pcBoundary.Location,fitLineFcn,evalLineFcn, 200, 200);
 
 figure(7);
 pause(0.5);
