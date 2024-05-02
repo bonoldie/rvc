@@ -23,21 +23,21 @@ pc = pcfromdepth(depthImg,1,intr);
 
 detphMaxThreshold = 1300;
 depthMinThreshold = 1000;
-yMaxThreshold = 350;
+%yMaxThreshold = 350;
 
 % manually detect location of the forniture
-pcRegion = pc.select( pc.Location(:, :, 2) < yMaxThreshold & pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
+% pcRegion = pc.select( pc.Location(:, :, 2) < yMaxThreshold & pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
+pcRegion = pc.select( pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
 
 figure(2);
 pause(0.5);
 pcshow(pcRegion);
-title('Selected region');
+title('3D region');
 
 % image analysis
-
 dImg = depthImg;
 
-rowMaxThreshold = 390;
+rowMaxThreshold = 10000;%350;
 
 for i=1:1:size(dImg,1)
     for j=1:1:size(dImg,2)
@@ -51,9 +51,12 @@ dImg = imadjust(dImg);
 dImg = imbinarize(dImg);
 dImg = ~dImg;
 
-el = strel('disk', 5);
+el = strel('disk', 15);
 dImg = imopen(dImg, el);
-dImg = bwareaopen(dImg,1000);
+dImg = bwareaopen(dImg,50000);
+
+pcRegion = pcfromdepth(double(dImg) .* double(depthImg), 1, intr);
+pcRegion = pcRegion.select( pcRegion.Location(:, :, 3) < detphMaxThreshold & pcRegion.Location(:,:, 3) > depthMinThreshold);
 
 figure(3);
 pause(0.5);
@@ -166,21 +169,23 @@ fitLineFcn = @(points) LineFitting3D(points);
 evalLineFcn =  @(model, points) ModelEval(model, points);
 
 % a smart initial choice must be done
-pcBoundarySubset = pcBoundary.select(pcBoundary.Location(:, 1) > centroidLocation(1));
+pcBoundarySubset = pcBoundary;% .select(pcBoundary.Location(:, 1) > centroidLocation(1));
 
 boundaryLines = 4;
 lineModels = cell(1,boundaryLines);
 
 for i=1:1:boundaryLines
     % runs RANSAC on a subset of the boudary points
-    [lineModel, inliersIdx] = ransac(pcBoundarySubset.Location,fitLineFcn,evalLineFcn, 8, 100);
+    [lineModel, inliersIdx] = ransac(pcBoundarySubset.Location,fitLineFcn,evalLineFcn, 8, 250, MaxNumTrials=10000);
     lineModels{i} = lineModel;
     
-    if i == 1
-        pcBoundarySubset = pointCloud(setdiff(pcBoundary.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));
-    else
-        pcBoundarySubset = pointCloud(setdiff(pcBoundarySubset.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));    
-    end
+    pcBoundarySubset = pointCloud(setdiff(pcBoundarySubset.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));    
+  
+    %if i == 1
+    %    pcBoundarySubset = pointCloud(setdiff(pcBoundary.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));
+    %else
+    %    pcBoundarySubset = pointCloud(setdiff(pcBoundarySubset.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));    
+    %end
 end
 
 figure(7);

@@ -57,7 +57,7 @@ V2=subs(f1(t),[c0,c1,c2],[s.c0,s.c1,s.c2]);
 A2=subs(f2(t),[c0,c1,c2],[s.c0,s.c1,s.c2]);
 
 
-pretty_equation(P2);
+% pretty_equation(P2);
 %%
 acc_range=linspace(ti,tc,100);
 constant_range=linspace(tc,tf-tc,100);
