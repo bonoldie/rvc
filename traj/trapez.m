@@ -60,7 +60,16 @@ decPlanning = [
 planningSolution = solve([accPlanning constPlanning decPlanning]);
 
 figure(1);
+subplot(3,1,1);
 hold on;
 fplot(subs(q_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)]);
 fplot(subs(q_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)]);
 fplot(subs(q_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf]);
+title('Position');
+
+subplot(3,1,2);
+hold on;
+fplot(subs(dq_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)]);
+fplot(subs(dq_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)]);
+fplot(subs(dq_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf]);
+title('Velocity');
