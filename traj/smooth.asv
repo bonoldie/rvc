@@ -1,0 +1,16 @@
+clear all; close all; clc;
+
+vias = [
+    0, 0;
+    1, 1;
+    2, 5;
+    5, 10;
+    10, -20;
+    15, 0;
+];
+
+n = size(vias, 1);
+n
+
+A = zeros(size(vias,1),2n)
+
