@@ -1,11 +1,16 @@
 clear all;
+close all;
 clc;
+
+% Joint space trajectories
+% Point-to-point trajectories
 
 syms t ti tm tf;
 syms qi dqi ddqi dddqi qm qf dqf ddqf dddqf;
 syms a0 a1 a2 a3  a4 a5 a6 a7 a8;
 
 %% linear trajector
+
 q(t) = a0 + (a1*(t-ti));
 
 solLinear = solve([ q(ti) == qi, q(tf) == qf ], [a0, a1]);
@@ -15,18 +20,18 @@ qFinal = subs(qLinear, [qi,qf, ti, tf], [0, pi, 0, 1]);
 dqFinal = gradient(qFinal);
 
 figure(1);
+subplot(121);
 fplot(qFinal, [0,1]);
-title("q(t)");
+title("linear trajectory","q(t)");
 xlabel("t");
-ylabel("q");
 
-figure(2);
+subplot(122);
 fplot(dqFinal, [0,1]);
-title("dq(t)");
+title("linear trajectory","dq(t)");
 xlabel("t");
-ylabel("q");
 
 %% parabolic trajectory
+
 q_a(t) = a0 + (a1*(t-ti)) + (a2*(t-ti)^2);
 q_d(t) = a3 + (a4*(t-tm)) + (a5*(t-tm)^2);
 
@@ -44,29 +49,30 @@ qDecFinal = subs(qDecParabolic, [qm, qf, dqf, tm, tf], [pi/2, pi, 0, 0.5, 1]);
 dqDecFinal = gradient(qDecFinal);
 ddqDecFinal = gradient(dqDecFinal);
 
-figure(1);
+figure(2);
+subplot(131);
 hold on;
 fplot(qAccelFinal, [0,0.5]);
 fplot(qDecFinal, [0.5,1]);
-title("q_a(t)");
+title("parabolic trajectory","q(t)");
 xlabel("t");
-ylabel("q");
+legend("acceleration","deceleration");
 
-figure(2);
+subplot(132);
 hold on;
 fplot(dqAccelFinal, [0,0.5]);
 fplot(dqDecFinal, [0.5,1]);
-title("dq_a(t)");
+title("parabolic trajectory","dq(t)");
 xlabel("t");
-ylabel("q");
+legend("acceleration","deceleration");
 
-figure(3);
+subplot(133);
 hold on;
 fplot(ddqAccelFinal, [0,0.5]);
 fplot(ddqDecFinal, [0.5,1]);
-title("ddq_a(t)");
+title("parabolic trajectory","ddq(t)");
 xlabel("t");
-ylabel("q");
+legend("acceleration","deceleration");
 
 %% cubic trajectory
 
@@ -80,34 +86,30 @@ dqFinal = gradient(qFinal);
 ddqFinal = gradient(dqFinal);
 dddqFinal = gradient(ddqFinal);
 
-figure(1);
+figure(3);
+subplot(221);
 hold on;
 fplot(qFinal, [0, 1]);
-title("q_a(t)");
+title("cubic trajectory","q(t)");
 xlabel("t");
-ylabel("q");
 
-figure(2);
+subplot(222);
 hold on;
 fplot(dqFinal, [0, 1]);
-title("dq_a(t)");
+title("cubic trajectory","dq(t)");
 xlabel("t");
-ylabel("q");
 
-figure(3);
+subplot(223);
 hold on;
 fplot(ddqFinal, [0, 1]);
-title("ddq_a(t)");
+title("cubic trajectory","ddq(t)");
 xlabel("t");
-ylabel("q");
 
-figure(4);
+subplot(224);
 hold on;
 fplot(dddqFinal, [0, 1]);
-title("dddq_a(t)");
+title("cubic trajectory","dddq(t)");
 xlabel("t");
-ylabel("q");
-
 
 %% 5th-order trajectory
 
@@ -121,33 +123,31 @@ dqFinal = gradient(qFinal);
 ddqFinal = gradient(dqFinal);
 dddqFinal = gradient(ddqFinal);
 
-figure(1);
+figure(4);
+subplot(221);
 hold on;
 fplot(qFinal, [0, 1]);
-title("q_a(t)");
+title("5th-order trajectory", "q(t)");
 xlabel("t");
-ylabel("q");
 
-figure(2);
+subplot(222);
 hold on;
 fplot(dqFinal, [0, 1]);
-title("dq_a(t)");
+title("5th-order trajectory", "dq(t)");
 xlabel("t");
-ylabel("q");
 
-figure(3);
+subplot(223);
 hold on;
 fplot(ddqFinal, [0, 1]);
-title("ddq_a(t)");
+title("5th-order trajectory", "ddq(t)");
 xlabel("t");
-ylabel("q");
 
-figure(4);
+subplot(224);
 hold on;
 fplot(dddqFinal, [0, 1]);
-title("dddq_a(t)");
+title("5th-order trajectory", "dddq(t)");
 xlabel("t");
-ylabel("q");
+
 
 %% 7th-order trajectory
 
@@ -161,32 +161,30 @@ dqFinal = gradient(qFinal);
 ddqFinal = gradient(dqFinal);
 dddqFinal = gradient(ddqFinal);
 
-figure(1);
+figure(5);
+subplot(221);
 hold on;
 fplot(qFinal, [0, 1]);
-title("q_a(t)");
+title("7th-order trajectory","q(t)");
 xlabel("t");
-ylabel("q");
 
-figure(2);
+subplot(222);
 hold on;
 fplot(dqFinal, [0, 1]);
-title("dq_a(t)");
+title("7th-order trajectory","dq(t)");
 xlabel("t");
-ylabel("q");
 
-figure(3);
+subplot(223);
 hold on;
 fplot(ddqFinal, [0, 1]);
-title("ddq_a(t)");
+title("7th-order trajectory","ddq(t)");
 xlabel("t");
-ylabel("q");
 
-figure(4);
+subplot(224);
 hold on;
 fplot(dddqFinal, [0, 1]);
-title("dddq_a(t)");
+title("7th-order trajectory","dddq(t)");
 xlabel("t");
-ylabel("q");
+
 
 

@@ -9,15 +9,37 @@ clc;
 qi_motion = 0;
 qf_motion = 20;
 
+delta_q = qf_motion - qi_motion;
+
+% initial and final velocity
+dqi_motion = 2;
+dqf_motion = 0;
+
 % initial and final time
 ti = 0;
 tf = 4;
 
-% acceleration phase duration
-t_acc = 1;
+delta_t = tf - ti;
 
-% deceleration phase duration
-t_dec = 1;
+% max acceleration
+ddq_max = 10;
+
+if ddq_max*delta_q < (abs(dqi_motion^2 - dqf_motion^2) / 2)
+    error('Feasibility constraint violated, increase the max acceleration/displacement, decrease final velocity or increase initial velocity');
+end
+
+if((ddq_max^2)*delta_t^2 - 4*ddq_max*delta_q + 2*ddq_max*(dqi_motion + dqf_motion)*delta_t - (dqi_motion - dqf_motion)^2) < 0
+    error('Max acceleration check failed');
+end
+
+dqc = 0.5*(dqi_motion + dqf_motion + ddq_max*delta_t - sqrt((ddq_max^2)*delta_t^2 - 4*ddq_max*delta_q + 2*ddq_max*(dqi_motion + dqf_motion)*delta_t - (dqi_motion - dqf_motion)^2));
+
+t_acc = (dqc - dqi_motion) / ddq_max;
+t_dec = (dqc - dqf_motion) / ddq_max;
+
+if t_acc < 0 || t_dec < 0
+    error('Invalid initial or final velocity');
+end
 
 % symbols for trajectory equations
 syms ac0 ac1 ac2 co0 co1 de0 de1 de2 t;
@@ -39,7 +61,7 @@ ddq_dec = gradient(dq_dec, t);
 % acceleration phase constraints
 accPlanning = [
     q_acc(ti) == qi_motion ...
-    dq_acc(ti) == 0 ...
+    dq_acc(ti) == dqi_motion ...
     t1 - ti == t_acc
 ];
 
@@ -54,7 +76,7 @@ constPlanning = [
 % deceleration phase constraints
 decPlanning = [
     q_dec(tf) == qf_motion ...
-    dq_dec(tf) == 0 ...
+    dq_dec(tf) == dqf_motion ...
     tf - t2 == t_dec
 ];
 
