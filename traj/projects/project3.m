@@ -138,8 +138,8 @@ end
 title('Multipoint splines (euler approximation)', 'ddq(t)');
 
 %% interpolating (cubic) polynomials - continuous acceleration
-dqi = 0;
-dqf = 0;
+dqi = 2;
+dqf = 1;
 
 T = [vias(:,1);0] - [0;vias(:,1)];
 T = T(2:end-1);
@@ -159,7 +159,7 @@ for i=1:size(c,1)
     end
 
     if i == size(c,1)
-        c(i) = c(i) - T(i) * dqf;
+        c(i) = c(i) - T(end-1) * dqf;
     end
 end
 
@@ -189,8 +189,8 @@ for i=1:size(vias, 1)-1
 end
 
 % initial/final velocity constraints
-multipointProblem{ end + 1 } = subs(gradient(A(1, :) * [1 t t^2 t^3].', t), t, vias(1, 1)) == 0;
-multipointProblem{ end + 1 } = subs(gradient(A(end, :) * [1 t t^2 t^3].', t), t, vias(end, 1)) == 0;
+multipointProblem{ end + 1 } = subs(gradient(A(1, :) * [1 t t^2 t^3].', t), t, vias(1, 1)) == dqi;
+multipointProblem{ end + 1 } = subs(gradient(A(end, :) * [1 t t^2 t^3].', t), t, vias(end, 1)) == dqf;
 
 multipointSol = solve([multipointProblem{:}]);
 
