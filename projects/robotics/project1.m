@@ -7,7 +7,7 @@ clc;
 
 syms t ti tm tf;
 syms qi dqi ddqi dddqi qm qf dqf ddqf dddqf;
-syms a0 a1 a2 a3  a4 a5 a6 a7 a8;
+syms a0 a1 a2 a3 a4 a5 a6 a7 a8;
 
 %% linear trajector
 
@@ -18,6 +18,10 @@ qLinear = subs(q, [a0, a1], [solLinear.a0, solLinear.a1]);
 
 qFinal = subs(qLinear, [qi,qf, ti, tf], [0, pi, 0, 1]);
 dqFinal = gradient(qFinal);
+
+disp("Linear trajectory");
+tab = struct2table(solLinear);
+disp(tab);
 
 figure(1);
 subplot(121);
@@ -33,13 +37,13 @@ xlabel("t");
 %% parabolic trajectory
 
 q_a(t) = a0 + (a1*(t-ti)) + (a2*(t-ti)^2);
-q_d(t) = a3 + (a4*(t-tm)) + (a5*(t-tm)^2);
+q_d(t) = a0 + (a1*(t-tm)) + (a2*(t-tm)^2);
 
 solAccelParabolic = solve([ q_a(ti) == qi, q_a(tm) == qm, subs(gradient(q_a), t, ti) == dqi ], [a0, a1, a2]);
 qAccelParabolic = subs(q_a, [a0, a1, a2], [solAccelParabolic.a0, solAccelParabolic.a1, solAccelParabolic.a2]);
 
-solDecParabolic = solve([ q_d(tf) == qf, q_d(tm) == qm, subs(gradient(q_d), t, tf) == dqf ], [a3, a4, a5]);
-qDecParabolic = subs(q_d, [a3, a4, a5], [solDecParabolic.a3, solDecParabolic.a4, solDecParabolic.a5]);
+solDecParabolic = solve([ q_d(tf) == qf, q_d(tm) == qm, subs(gradient(q_d), t, tf) == dqf ], [a0, a1, a2]);
+qDecParabolic = subs(q_d, [a0, a1, a2], [solDecParabolic.a0, solDecParabolic.a1, solDecParabolic.a2]);
 
 qAccelFinal = subs(qAccelParabolic, [qi, dqi, qm, ti, tm], [0, 0, pi/2, 0, 0.5]);
 dqAccelFinal = gradient(qAccelFinal);
@@ -48,6 +52,14 @@ ddqAccelFinal = gradient(dqAccelFinal);
 qDecFinal = subs(qDecParabolic, [qm, qf, dqf, tm, tf], [pi/2, pi, 0, 0.5, 1]);
 dqDecFinal = gradient(qDecFinal);
 ddqDecFinal = gradient(dqDecFinal);
+
+disp("Parabolic trajectory (acc)");
+tab1 = struct2table(solAccelParabolic);
+disp(tab1);
+
+disp("Parabolic trajectory (dec)");
+tab2 = struct2table(solDecParabolic);
+disp(tab2);
 
 figure(2);
 subplot(131);
@@ -86,6 +98,10 @@ dqFinal = gradient(qFinal);
 ddqFinal = gradient(dqFinal);
 dddqFinal = gradient(ddqFinal);
 
+disp("Cubic trajectory");
+tab = struct2table(solCubic);
+disp(tab);
+
 figure(3);
 subplot(221);
 hold on;
@@ -122,6 +138,10 @@ qFinal = subs(q5thOrder, [qi,dqi, ddqi, qf, dqf, ddqf, ti, tf], [0, 0,0 pi, 0, 0
 dqFinal = gradient(qFinal);
 ddqFinal = gradient(dqFinal);
 dddqFinal = gradient(ddqFinal);
+
+disp("5th-order trajectory");
+tab = struct2table(sol5thOrder);
+disp(tab);
 
 figure(4);
 subplot(221);
@@ -160,6 +180,10 @@ qFinal = subs(q7thOrder, [qi,dqi, ddqi, dddqi, qf, dqf, ddqf, dddqf, ti, tf], [0
 dqFinal = gradient(qFinal);
 ddqFinal = gradient(dqFinal);
 dddqFinal = gradient(ddqFinal);
+
+disp("7th-order trajectory");
+tab = struct2table(sol7thOrder);
+disp(tab);
 
 figure(5);
 subplot(221);
