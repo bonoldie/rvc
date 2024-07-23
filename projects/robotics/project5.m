@@ -53,15 +53,14 @@ quiver3(repmat(t2(1), 1, 3), repmat(t2(2), 1, 3), repmat(t2(3), 1, 3), xVersor*R
 quiver3(repmat(t3(1), 1, 3), repmat(t3(2), 1, 3), repmat(t3(3), 1, 3), xVersor*R3, yVersor*R3, zVersor*R3);
 
 % plot linear paths
-fplot3(@(u) [1 0 0]*linear1(u),@(u) [0 1 0]*linear1(u),@(u) [0 0 1]*linear1(u), [0 1], LineWidth=2, Color=rand(1,3));
-fplot3(@(u) [1 0 0]*linear4(u),@(u) [0 1 0]*linear4(u),@(u) [0 0 1]*linear4(u), [0 1], LineWidth=2, Color=rand(1,3));
+fplot3(@(u) [1 0 0]*linear1(u),@(u) [0 1 0]*linear1(u),@(u) [0 0 1]*linear1(u), [0 1], LineWidth=2, Color=rand(1,3), DisplayName='Linear path');
+fplot3(@(u) [1 0 0]*linear4(u),@(u) [0 1 0]*linear4(u),@(u) [0 0 1]*linear4(u), [0 1], LineWidth=2, Color=rand(1,3), DisplayName='Linear path');
 
 % plot circular paths
-fplot3(@(u) [1 0 0]*circ2(u),@(u) [0 1 0]*circ2(u),@(u) [0 0 1]*circ2(u), [0 1], LineWidth=2, Color=rand(1,3));
-fplot3(@(u) [1 0 0]*circ3(u),@(u) [0 1 0]*circ3(u),@(u) [0 0 1]*circ3(u), [0 1], LineWidth=2, Color=rand(1,3));
+fplot3(@(u) [1 0 0]*circ2(u),@(u) [0 1 0]*circ2(u),@(u) [0 0 1]*circ2(u), [0 1], LineWidth=2, Color=rand(1,3), DisplayName='Circular path');
+fplot3(@(u) [1 0 0]*circ3(u),@(u) [0 1 0]*circ3(u),@(u) [0 0 1]*circ3(u), [0 1], LineWidth=2, Color=rand(1,3), DisplayName='Circular path');
 
 % plot paths velocities
-
 uInstants = 0:0.1:1;
 
 linear1Val = linear1(uInstants);
@@ -87,8 +86,10 @@ ddvals = [ddcirc2Val ddcirc3Val];
 normdVals = dvals ./ sqrt(sum(dvals.^2,1));
 normddVals = ddvals ./ sqrt(sum(ddvals.^2,1));
 
-quiver3([1 0 0]*vals,[0 1 0]*vals,[0 0 1]*vals, [1 0 0]*normdVals,[0 1 0]*normdVals,[0 0 1]*normdVals,0);
-quiver3([1 0 0]*[circ2Val circ3Val],[0 1 0]*[circ2Val circ3Val],[0 0 1]*[circ2Val circ3Val], [1 0 0]*normddVals,[0 1 0]*normddVals,[0 0 1]*normddVals,0);
+quiver3([1 0 0]*vals,[0 1 0]*vals,[0 0 1]*vals, [1 0 0]*normdVals,[0 1 0]*normdVals,[0 0 1]*normdVals,0, DisplayName='Velocity');
+quiver3([1 0 0]*[circ2Val circ3Val],[0 1 0]*[circ2Val circ3Val],[0 0 1]*[circ2Val circ3Val], [1 0 0]*normddVals,[0 1 0]*normddVals,[0 0 1]*normddVals,0, DisplayName='Acceleration');
+
+legend('','','','','', 'Linear path', 'Linear path', 'Circular path', 'Circular path', 'Velocity', 'Acceleration');
 
 
 

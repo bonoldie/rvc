@@ -12,44 +12,38 @@ qf_motion = 20;
 delta_q = qf_motion - qi_motion;
 
 % initial and final velocity
-dqi_motion = 0;
+dqi_motion = 2;
 dqf_motion = 0;
 
 % initial time
 ti = 0;
 
 % max velocity
-dq_max = 3;
+dq_max = 10;
 
 % max acceleration
-ddq_max = 1;
+ddq_max = 10;
 
 if ddq_max*delta_q < (abs(dqi_motion^2 - dqf_motion^2) / 2)
     error('Feasibility constraint violated, increase the max acceleration/displacement, decrease final velocity or increase initial velocity');
 end
 
-% Check if the maximum acceleration is reached
-if ddq_max*delta_q < ((dq_max)^2)-((dqi_motion^2 + dqf_motion^2) / 2)
-    dqc = sqrt(ddq_max*delta_q+((dqi_motion^2 + dqf_motion^2) / 2));
-else
-    dqc = dq_max;
+if ddq_max*delta_q <  ((dqi_motion^2 + dqf_motion^2) / 2)
+    error('Feasibility constraint violated, increase the max acceleration/displacement, decrease final velocity or increase initial velocity');
 end
+
+
+dqc = 0.5*(dqi_motion + dqf_motion + ddq_max*delta_t - sqrt((ddq_max^2)*delta_t^2 - 4*ddq_max*delta_q + 2*ddq_max*(dqi_motion + dqf_motion)*delta_t - (dqi_motion - dqf_motion)^2));
 
 t_acc = (dqc - dqi_motion) / ddq_max;
 t_dec = (dqc - dqf_motion) / ddq_max;
 
-delta_qc = delta_q - (ddq_max * t_acc^2 + dqi_motion * t_acc) - (dqc * t_dec - ddq_max * t_dec^2);
-
-tf = ti + t_acc + t_dec + delta_qc/dqc;
-
 if t_acc < 0 || t_dec < 0
     error('Invalid initial or final velocity');
-end
-
-%% Trajectory calculations
+endd
 
 % symbols for trajectory equations
-syms ac0 ac1 ac2 co0 co1 de0 de1 de2 t;
+syms ac0 ac1 ac2 co0 co1 de0 de1 de2 t tf;
 assume([ac0 ac1 ac2 co0 co1 de0 de1 de2], 'real');
 syms t1 t2;
 

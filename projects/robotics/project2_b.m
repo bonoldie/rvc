@@ -41,6 +41,8 @@ if t_acc < 0 || t_dec < 0
     error('Invalid initial or final velocity');
 end
 
+%% Trajectory calculations
+
 % symbols for trajectory equations
 syms ac0 ac1 ac2 co0 co1 de0 de1 de2 t;
 assume([ac0 ac1 ac2 co0 co1 de0 de1 de2], 'real');

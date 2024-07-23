@@ -42,15 +42,6 @@ p2_3linspace_centered = p2_3linspace - p0;
 p2_3linspace_projected = (p2_3linspace_centered ./ sqrt(sum(p2_3linspace_centered.^2,1))) * r;
 p2_3linspace_projected = p2_3linspace_projected  + p0;
 
-
-[az1,el1] = cart2sph([1 0 0]*(p1-p0),[0 1 0]*(p1-p0),[0 0 1]*(p1-p0));
-[az2,el2] = cart2sph([1 0 0]*(p2-p0),[0 1 0]*(p2-p0),[0 0 1]*(p2-p0));
-[az3,el3] = cart2sph([1 0 0]*(p3-p0),[0 1 0]*(p3-p0),[0 0 1]*(p3-p0));
-
-traj1_2_sph = @(u) repmat([az1,el1]',1,size(u, 2)) + ([az2,el2] - [az1,el1])'*u;
-traj2_3_sph = @(u) repmat([az2,el2]',1,size(u, 2)) + ([az3,el3] - [az2,el2])'*u;
-
-
 % plot them all
 ax = axes();
 view(ax, 3);
@@ -79,18 +70,8 @@ scatter3([1 0 0]*[p1 p2 p3],[0 1 0]*[p1 p2 p3],[0 0 1]*[p1 p2 p3], 'r', Marker='
 plot3([1 0 0]*p1_2linspace,[0 1 0]*p1_2linspace,[0 0 1]*p1_2linspace, 'b',LineStyle='--', LineWidth=1);
 plot3([1 0 0]*p2_3linspace,[0 1 0]*p2_3linspace,[0 0 1]*p2_3linspace, 'b',LineStyle='--', LineWidth=1);
 
-
-% trajectories plots
-u = 0:0.01:1;
-
-[traj1_2X, traj1_2Y, traj1_2Z] = sph2cart([1 0]*traj1_2_sph(u), [0 1]*traj1_2_sph(u), r*ones(1,size(u,2)));
-plot3(traj1_2X + p0(1), traj1_2Y + p0(2), traj1_2Z + p0(3), 'g', LineWidth=2);
-
-[traj2_3X, traj2_3Y, traj2_3Z] = sph2cart([1 0]*traj2_3_sph(u), [0 1]*traj2_3_sph(u), r*ones(1,size(u,2)));
-plot3(traj2_3X + p0(1), traj2_3Y + p0(2), traj2_3Z + p0(3), 'g', LineWidth=2);
-
-% plot3([1 0 0]*p1_2linspace_projected,[0 1 0]*p1_2linspace_projected,[0 0 1]*p1_2linspace_projected, 'g', LineWidth=2);
-% plot3([1 0 0]*p2_3linspace_projected,[0 1 0]*p2_3linspace_projected,[0 0 1]*p2_3linspace_projected, 'g', LineWidth=2);
+plot3([1 0 0]*p1_2linspace_projected,[0 1 0]*p1_2linspace_projected,[0 0 1]*p1_2linspace_projected, 'g', LineWidth=2);
+plot3([1 0 0]*p2_3linspace_projected,[0 1 0]*p2_3linspace_projected,[0 0 1]*p2_3linspace_projected, 'g', LineWidth=2);
 
 axis equal;
 
@@ -99,11 +80,3 @@ zlim([-10 10]);
 ylim([-10 10]);
 
 view([-10 -10 10]);
-
-figure(2);
-hold on;
-subplot(121)
-plot(u,[1 0]*traj2_3_sph(u), 'g', LineWidth=1);
-
-subplot(122)
-plot(u,[0 1]*traj2_3_sph(u), 'b', LineWidth=1);
