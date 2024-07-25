@@ -1,0 +1,4 @@
+Navigating https://www.lidarusa.com/sample-data.html
+
+Found some interesing dataset such as this one which is so dense that you 
+can see the high voltage cables: http://mypointclouds.com/projects/3438d8aa-cfa6-4ab4-8607-78b8ea48b200-PricevilleLines
