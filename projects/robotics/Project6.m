@@ -6,12 +6,14 @@ clc;
 
 syms x y z;
 
+ENABLE_ANIMATION = 1;
+
 % sphere center and radius
 p0 = [5 0 0]';
 r = 5;
 
 % random points
-theta = rand(3,1)*pi; % lat 
+theta = rand(3,1)*pi; % lat
 phi = rand(3,1)*2*pi; % long
 
 p1_O = r*[sin(theta(1))*cos(phi(1)); sin(theta(1))*sin(phi(1)); cos(theta(1))];
@@ -83,14 +85,14 @@ plot3([1 0 0]*p1_2linspace,[0 1 0]*p1_2linspace,[0 0 1]*p1_2linspace, 'b',LineSt
 plot3([1 0 0]*p2_3linspace,[0 1 0]*p2_3linspace,[0 0 1]*p2_3linspace, 'b',LineStyle='--', LineWidth=1);
 plot3([1 0 0]*p3_1linspace,[0 1 0]*p3_1linspace,[0 0 1]*p3_1linspace, 'b',LineStyle='--', LineWidth=1);
 
-plane1_2_O_MeshFun(x,y) = solve(plane1_2_O, z);
-plane1_2_OS = surf(X, Y,double(plane1_2_O_MeshFun(X, Y)), FaceAlpha=0.2, EdgeAlpha=0.2);
+% plane1_2_O_MeshFun(x,y) = solve(plane1_2_O, z);
+% plane1_2_OS = surf(X, Y,double(plane1_2_O_MeshFun(X, Y)), FaceAlpha=0.2, EdgeAlpha=0.2);
 
 quiver3(p0(1),p0(2),p0(3), p1_O(1),p1_O(2),p1_O(3),'r', LineWidth=1);
 quiver3(p0(1),p0(2),p0(3), p2_O(1),p2_O(2),p2_O(3),'r', LineWidth=1);
 quiver3(p0(1),p0(2),p0(3), p3_O(1),p3_O(2),p3_O(3),'r', LineWidth=1);
 
-quiver3(p0(1),p0(2),p0(3), GCP1_2(1),GCP1_2(2),GCP1_2(3),'black', LineWidth=1);
+% quiver3(p0(1),p0(2),p0(3), GCP1_2(1),GCP1_2(2),GCP1_2(3),'black', LineWidth=1);
 
 % quiver3(p0(1),p0(2),p0(3), p1_2_test(1),p1_2_test(2),p1_2_test(3),'magenta', LineWidth=1);
 
@@ -102,7 +104,7 @@ geodesic_plots(1) = plot3([1 0 0]*traj1_2_eval,[0 1 0]*traj1_2_eval,[0 0 1]*traj
 geodesic_plots(2) = plot3([1 0 0]*traj2_3_eval,[0 1 0]*traj2_3_eval,[0 0 1]*traj2_3_eval, LineStyle="-", LineWidth=2, DisplayName='Geodesic line 2-3');
 geodesic_plots(3) = plot3([1 0 0]*traj3_1_eval,[0 1 0]*traj3_1_eval,[0 0 1]*traj3_1_eval, LineStyle="-", LineWidth=2, DisplayName='Geodesic line 3-1');
 
-legend(geodesic_plots, {'Geodesic line 1-2','Geodesic line 2-3','Geodesic line 3-1'});
+legend(geodesic_plots, {'Geodesic arc 1-2','Geodesic arc 2-3','Geodesic arc 3-1'});
 
 % view settings
 axis equal;
@@ -110,3 +112,45 @@ xlim([-10 10]);
 zlim([-10 10]);
 ylim([-10 10]);
 view([-10 -10 10]);
+
+if ENABLE_ANIMATION <= 0
+    return;
+end
+
+animationQuiver = quiver3(1,1,1, p3_O(1),p3_O(2),p3_O(3),'b', LineWidth=3);
+
+legend([geodesic_plots(1), geodesic_plots(2), geodesic_plots(3), animationQuiver], {'Geodesic arc 1-2','Geodesic arc 2-3','Geodesic arc 3-1', 'Navigation velocity'});
+
+i=0:0.05:theta1_2+theta2_3+theta3_1;
+index = 1;
+
+while 1 == 1
+    angle = i(index);
+
+    if angle < theta1_2
+        pos = traj1_2(angle);
+        direction = cross(GCP1_2, pos - p0);
+    elseif angle < theta1_2 + theta2_3
+        pos = traj2_3(angle - theta1_2);
+        direction = cross(GCP2_3, pos - p0);
+    else
+        pos = traj3_1(angle - theta1_2 - theta2_3);
+        direction = cross(GCP3_1, pos - p0);
+    end
+
+    animationQuiver.XData = pos(1);
+    animationQuiver.YData = pos(2);
+    animationQuiver.ZData = pos(3);
+
+    animationQuiver.UData = direction(1)./r;
+    animationQuiver.VData = direction(2)./r;
+    animationQuiver.WData = direction(3)./r;
+  
+    if index >= size(i, 2)
+        index = 1;
+    else
+        index = index + 1;
+    end
+
+    pause(0.1);
+end
