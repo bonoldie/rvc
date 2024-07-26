@@ -2,39 +2,45 @@ close all;
 clear;
 clc;
 
+%% Setup 
+
 % images are captured using the primesense carmine 
 % internals
 f = 525;
 u0 = 319.5;
 v0 = 239.5;
 
+% cameraIntrinsics object holds information about camera's intrinsic calibration parameters
 intr = cameraIntrinsics(f, [u0,v0], [480 640]);
 
 % load the images
-rgbImg = imread("0000206-000006870780.jpg");
-depthImg = imread("0000206-000006840696.png");
+rgbImg = imread("rgb_image.jpg");
+depthImg = imread("range_image.png");
 
 figure(1);
 pause(0.5);
 imshow(rgbImg);
 title('Original img');
 
+%% Point cloud extraction from range map
 pc = pcfromdepth(depthImg,1,intr);
 
 detphMaxThreshold = 1300;
 depthMinThreshold = 1000;
-%yMaxThreshold = 350;
+yMaxThreshold = 350;
 
-% manually detect location of the forniture
-% pcRegion = pc.select( pc.Location(:, :, 2) < yMaxThreshold & pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
-pcRegion = pc.select( pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
+% An initial selection is made based on and estimation of the detph of the
+% plane representing the front of the forniture
+
+pcRegion = pc.select( pc.Location(:, :, 2) < yMaxThreshold & pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
+% pcRegion = pc.select( pc.Location(:, :, 3) < detphMaxThreshold & pc.Location(:,:, 3) > depthMinThreshold);
 
 figure(2);
 pause(0.5);
 pcshow(pcRegion);
 title('3D region');
 
-% image analysis
+%% 2D/3D image features analysis
 dImg = depthImg;
 
 rowMaxThreshold = 10000;%350;
@@ -51,22 +57,26 @@ dImg = imadjust(dImg);
 dImg = imbinarize(dImg);
 dImg = ~dImg;
 
+%pcRegion = pcfromdepth(double(dImg) .* double(depthImg), 1, intr);
+%pcRegion = pcRegion.select( pcRegion.Location(:, :, 3) < detphMaxThreshold & pcRegion.Location(:,:, 3) > depthMinThreshold);
+
+
 el = strel('disk', 15);
 dImg = imopen(dImg, el);
 dImg = bwareaopen(dImg,50000);
 
-pcRegion = pcfromdepth(double(dImg) .* double(depthImg), 1, intr);
-pcRegion = pcRegion.select( pcRegion.Location(:, :, 3) < detphMaxThreshold & pcRegion.Location(:,:, 3) > depthMinThreshold);
-
 figure(3);
 pause(0.5);
+
+subplot(121);
+hold on;
 imshow(dImg);
-title('Binarized image w/region props');
+th = title('2D region props', Color='w');
 
 boundaries = bwboundaries(dImg);
 boundary = boundaries{1};
 
-hold on;
+
 plot(boundary(:,2), boundary(:,1), 'r', 'LineWidth', 2, 'Color', 'yellow'); 
 
 regionProps = regionprops(dImg, 'Centroid', 'BoundingBox', 'Orientation', 'Extrema');
@@ -77,15 +87,14 @@ scatter(regionProps.Extrema(:, 1), regionProps.Extrema(:, 2), 'filled', 'Color',
 scatter(regionProps.Centroid(1), regionProps.Centroid(2), 'filled', 'Color', 'blue');
 quiver(regionProps.Centroid(1), regionProps.Centroid(2), cos(deg2rad(regionProps.Orientation)), -sin(deg2rad(regionProps.Orientation)), 'Color', 'cyan', 'LineWidth', 2, 'AutoScaleFactor', 100);
 
-%% centroid and 3D border points
+% centroid and 3D border points
 uCentroid = round(regionProps.Centroid(2));
 vCentroid = round(regionProps.Centroid(1));
 centroidLocation = pc.Location(uCentroid,vCentroid, :);
 centroidLocation = centroidLocation(1, :);
 
-figure(4);
-pause(0.5);
-%pcshow(pcRegion);
+
+subplot(122);
 hold on;
 scatter3(centroidLocation(1),centroidLocation(2),centroidLocation(3),'Color', 'blue', 'LineWidth', 20);
 title('3D region props');
@@ -113,7 +122,7 @@ pcshow(pcBoundary,'ColorSource','Color', 'MarkerSize', 20);
 fittedPlane = pcfitplane(pcRegion, 1);
 
 figure(5);
-subplot(1,2,1);
+subplot(121);
 pause(0.5);
 hold on;
 pcshow(pcRegion);
@@ -121,56 +130,29 @@ plot(fittedPlane);
 quiver3(centroidLocation(1,1),centroidLocation(1,2),centroidLocation(1,3), fittedPlane.Normal(1), fittedPlane.Normal(2), fittedPlane.Normal(3), "filled", "LineWidth",3,"AutoScaleFactor", 100 );
 title('Plane fitting w/pcfitplane');
 
-% manual 
+% manual plane fitting
+planeComponents = FitPlane(pcRegion);
 
-centrCoords = pcRegion.Location - repmat(centroidLocation, pcRegion.Count, 1);
-covMat = centrCoords'*centrCoords;
-[v, a] = eig(covMat);
-
-[amin, minIdx]=min(diag(a));
-vmin = v(:, minIdx);
-planeNorm = vmin/norm(vmin);
-%planeD = planeNorm'*centroidLocation(1,:);
-
-w = null(vmin');
 [P,Q] = meshgrid(-300:300);
-X = centroidLocation(1,1)+w(1,1)*P+w(1,2)*Q; % Compute the corresponding cartesian coordinates
-Y = centroidLocation(1,2)+w(2,1)*P+w(2,2)*Q; %   using the two vectors in w
-Z = centroidLocation(1,3)+w(3,1)*P+w(3,2)*Q;
-subplot(1,2,2);
+X = centroidLocation(1,1)+planeComponents(1,1)*P+planeComponents(1,2)*Q; % Compute the corresponding cartesian coordinates
+Y = centroidLocation(1,2)+planeComponents(2,1)*P+planeComponents(2,2)*Q; % using the two vectors in w
+Z = centroidLocation(1,3)+planeComponents(3,1)*P+planeComponents(3,2)*Q;
+subplot(122);
 pause(0.5);
 hold on;
 pcshow(pcRegion);
-quiver3(centroidLocation(1,1),centroidLocation(1,2),centroidLocation(1,3), vmin(1), vmin(2), vmin(3), "filled", "LineWidth",3,"AutoScaleFactor", 100 );
+quiver3(centroidLocation(1,1),centroidLocation(1,2),centroidLocation(1,3), vmin(1), vmin(2), vmin(3), "filled", "LineWidth",3,"AutoScaleFactor", 100, Color='b');
 surf(X,Y,Z,  'EdgeColor','r');
 title('Manual Plane fitting');
-
-%% 
-
-figure(6);
-hold on;
-pcOneBoundary = pcBoundary.select(pcBoundary.Location(:,1) > 300);
-
-pcshow(pcOneBoundary);
-lineModel = LineFitting3D(pcOneBoundary.Location);
-
-%lt = -1000:1:1000; 
-%x = centroidLocation(1) + lineModel(1)*t';
-%y = centroidLocation(2) + lineModel(2)*t';
-%z = centroidLocation(3) + lineModel(3)*t';
-
-hold on;
-quiver3(lineModel.Origin(1),lineModel.Origin(2),lineModel.Origin(3), lineModel.Normal(1), lineModel.Normal(2), lineModel.Normal(3), "filled", "LineWidth",3,"AutoScaleFactor", 100 );
-
 
 %% 3D border fitting
 
 fitLineFcn = @(points) LineFitting3D(points);
 evalLineFcn =  @(model, points) ModelEval(model, points);
 
-% a smart initial choice must be done
-pcBoundarySubset = pcBoundary;% .select(pcBoundary.Location(:, 1) > centroidLocation(1));
+pcBoundarySubset = pcBoundary;%  we may want a smart initial choice: .select(pcBoundary.Location(:, 1) > centroidLocation(1));
 
+% We want to extract the lines representing the 4 sides
 boundaryLines = 4;
 lineModels = cell(1,boundaryLines);
 
@@ -178,14 +160,9 @@ for i=1:1:boundaryLines
     % runs RANSAC on a subset of the boudary points
     [lineModel, inliersIdx] = ransac(pcBoundarySubset.Location,fitLineFcn,evalLineFcn, 8, 250, MaxNumTrials=10000);
     lineModels{i} = lineModel;
-    
+
+    % Updates the point cloud of boundary points removing the inliers of the current line model
     pcBoundarySubset = pointCloud(setdiff(pcBoundarySubset.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));    
-  
-    %if i == 1
-    %    pcBoundarySubset = pointCloud(setdiff(pcBoundary.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));
-    %else
-    %    pcBoundarySubset = pointCloud(setdiff(pcBoundarySubset.Location, pcBoundarySubset.Location(inliersIdx, :), 'rows', 'stable'));    
-    %end
 end
 
 figure(7);
@@ -194,9 +171,9 @@ hold on;
 pcshow(pcBoundary);
 
 for i=1:1:size(lineModels, 2)
-    PlotLineModel(lineModels{i});
+    linePlot =PlotLineModel(lineModels{i});
+    linePlot.DisplayName = "BoundaryLine";
 end
-
 
 linesCombinations = 1:boundaryLines;
 linesCombinations = nchoosek(linesCombinations,2);
@@ -204,7 +181,7 @@ linesCombinations = nchoosek(linesCombinations,2);
 angles = zeros(size(linesCombinations, 1),1);
 
 for i=1:size(linesCombinations, 1)
-    angles(i)=AngleBetweenLines(lineModels{linesCombinations(i,1)},lineModels{linesCombinations(i,2)});
+    angles(i) = AngleBetweenLines(lineModels{linesCombinations(i,1)},lineModels{linesCombinations(i,2)});
 end
 
 [sortedAngles, sortAnglesIdx] = sort(angles, 'descend');
@@ -215,20 +192,16 @@ for i=1:boundaryLines
     anglePoints(i,:) = LinesIntersection(lineModels{linesCombinations(sortAnglesIdx(i),1)}, lineModels{linesCombinations(sortAnglesIdx(i),2)}) ;
 end
 
-scatter3(anglePoints(:,1),anglePoints(:,2),anglePoints(:,3), 'filled', 'LineWidth', 20);
+scatter3(anglePoints(:,1),anglePoints(:,2),anglePoints(:,3), 'filled', 'LineWidth', 30, DisplayName='3D lines intersection points');
 
+lh = legend();
+set( lh, 'Box', 'on', 'Color', [0.9,0.9,0.9], 'EdgeColor', get( lh, 'Color' )) ;
 
+% Evaluate how well the line model represent the underlying point cloud
 function distances = ModelEval(model, points)
     distances = zeros(size(points,1),1);
 
     for i=1:1:size(points,1)
         distances(i) = norm(points(i,:) - (model.Origin + PointToLineProjection(model,points(i, :)))).^2;
     end
-
-    %disp(min(distances));
-    %figure(10);
-    %pause(0.5);
-    %pcshow(pointCloud(points));
-    %quiver3(model.Origin(1,1),model.Origin(1,2),model.Origin(1,3), model.Normal(1), model.Normal(2), model.Normal(3), "filled", "LineWidth",3,"AutoScaleFactor", 100 );
 end
-
