@@ -11,10 +11,8 @@
 %
 % Modified by Umberto Castellani June 2024
 
-
 clc;clear;
 close all;
-
 
 %% load data
 fid = fopen('cam2target.csv', 'r');
@@ -31,6 +29,7 @@ tvec_b_g = [A{5}, A{6}, A{7}];
 N = 18;
 T_b_g_list = zeros(4, 4, N);
 T_t_c_list = zeros(4, 4, N);
+
 % From target to camera
 T_c_t_list = zeros(4, 4, N);
 

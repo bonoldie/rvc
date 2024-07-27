@@ -137,12 +137,24 @@ planeComponents = FitPlane(pcRegion);
 X = centroidLocation(1,1)+planeComponents(1,1)*P+planeComponents(1,2)*Q; % Compute the corresponding cartesian coordinates
 Y = centroidLocation(1,2)+planeComponents(2,1)*P+planeComponents(2,2)*Q; % using the two vectors in w
 Z = centroidLocation(1,3)+planeComponents(3,1)*P+planeComponents(3,2)*Q;
+
 subplot(122);
 pause(0.5);
 hold on;
 pcshow(pcRegion);
-quiver3(centroidLocation(1,1),centroidLocation(1,2),centroidLocation(1,3), vmin(1), vmin(2), vmin(3), "filled", "LineWidth",3,"AutoScaleFactor", 100, Color='b');
 surf(X,Y,Z,  'EdgeColor','r');
+
+planeNormal = cross(planeComponents(:,1),planeComponents(:,2));
+planeNormal = planeNormal ./ norm(planeNormal);
+
+quiver3(centroidLocation(1,1),centroidLocation(1,2),centroidLocation(1,3), planeNormal(1), planeNormal(2), planeNormal(3), "filled", "LineWidth",3,"AutoScaleFactor", 100, Color='b');
+
+p1 = pcRegion.Location(1000, :)';
+d1 = PointToPlaneDistance(planeComponents, p1 - centroidLocation');
+
+scatter3(p1(1), p1(2), p1(3), "LineWidth",3, Color='g');
+quiver3(p1(1),  p1(2), p1(3), [d1 0 0]*planeNormal, [0 d1 0]*planeNormal, [0 0 d1]*planeNormal, "filled", "LineWidth",3, Color='g');
+
 title('Manual Plane fitting');
 
 %% 3D border fitting
