@@ -2,8 +2,7 @@ clear all;
 close all;
 clc;
 
-set(0, 'DefaultAxesFontSize', 13);
-set(0, 'DefaultFigurePosition', [0,0,1080,720]);
+set(groot,'d','Parchment')
 
 % Joint space trajectories
 % Point-to-point trajectories
@@ -28,12 +27,12 @@ disp(tab);
 
 figure(1);
 subplot(121);
-fplot(qFinal, [0,1], 'LineWidth', 2);
+fplot(qFinal, [0,1]);
 xlabel("t");
 ylabel("q",'Rotation',0);
 
 subplot(122);
-fplot(dqFinal, [0,1], 'LineWidth', 2);
+fplot(dqFinal, [0,1]);
 xlabel("t");
 ylabel('$$\dot{q}$$','interpreter','latex','Rotation',0);
 
@@ -70,24 +69,24 @@ disp(tab2);
 figure(2);
 subplot(131);
 hold on;
-fplot(qAccelFinal, [0,0.5], 'LineWidth', 2);
-fplot(qDecFinal, [0.5,1], 'LineWidth', 2);
+fplot(qAccelFinal, [0,0.5]);
+fplot(qDecFinal, [0.5,1]);
 xlabel("t");
 ylabel("q",'Rotation',0);
 legend("acceleration","deceleration");
 
 subplot(132);
 hold on;
-fplot(dqAccelFinal, [0,0.5], 'LineWidth', 2);
-fplot(dqDecFinal, [0.5,1], 'LineWidth', 2);
+fplot(dqAccelFinal, [0,0.5]);
+fplot(dqDecFinal, [0.5,1]);
 xlabel("t");
 ylabel('$$\dot{q}$$','interpreter','latex','Rotation',0);
 legend("acceleration","deceleration");
 
 subplot(133);
 hold on;
-fplot(ddqAccelFinal, [0,0.5], 'LineWidth', 2);
-fplot(ddqDecFinal, [0.5,1], 'LineWidth', 2);
+fplot(ddqAccelFinal, [0,0.5]);
+fplot(ddqDecFinal, [0.5,1]);
 xlabel("t");
 ylabel('$$\ddot{q}$$','interpreter','latex','Rotation',0);
 legend("acceleration","deceleration");
@@ -114,25 +113,25 @@ disp(tab);
 figure(3);
 subplot(221);
 hold on;
-fplot(qFinal, [0, 1], 'LineWidth', 2);
+fplot(qFinal, [0, 1]);
 xlabel("t");
 ylabel("q",'Rotation',0);
 
 subplot(222);
 hold on;
-fplot(dqFinal, [0, 1], 'LineWidth', 2);
+fplot(dqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\dot{q}$$','interpreter','latex','Rotation',0);
 
 subplot(223);
 hold on;
-fplot(ddqFinal, [0, 1], 'LineWidth', 2);
+fplot(ddqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\ddot{q}$$','interpreter','latex','Rotation',0);
 
 subplot(224);
 hold on;
-fplot(dddqFinal, [0, 1], 'LineWidth', 2);
+fplot(dddqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\stackrel{...}{q}$$','interpreter','latex','Rotation',0);
 
@@ -158,25 +157,25 @@ disp(tab);
 figure(4);
 subplot(221);
 hold on;
-fplot(qFinal, [0, 1], 'LineWidth', 2);
+fplot(qFinal, [0, 1]);
 xlabel("t");
 ylabel("q",'Rotation',0);
 
 subplot(222);
 hold on;
-fplot(dqFinal, [0, 1], 'LineWidth', 2);
+fplot(dqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\dot{q}$$','interpreter','latex','Rotation',0);
 
 subplot(223);
 hold on;
-fplot(ddqFinal, [0, 1], 'LineWidth', 2);
+fplot(ddqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\ddot{q}$$','interpreter','latex','Rotation',0);
 
 subplot(224);
 hold on;
-fplot(dddqFinal, [0, 1], 'LineWidth', 2);
+fplot(dddqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\stackrel{...}{q}$$','interpreter','latex','Rotation',0);
 
@@ -202,25 +201,25 @@ disp(tab);
 figure(5);
 subplot(221);
 hold on;
-fplot(qFinal, [0, 1], 'LineWidth', 2);
+fplot(qFinal, [0, 1]);
 xlabel("t");
 ylabel("q",'Rotation',0);
 
 subplot(222);
 hold on;
-fplot(dqFinal, [0, 1], 'LineWidth', 2);
+fplot(dqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\dot{q}$$','interpreter','latex','Rotation',0);
 
 subplot(223);
 hold on;
-fplot(ddqFinal, [0, 1], 'LineWidth', 2);
+fplot(ddqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\ddot{q}$$','interpreter','latex','Rotation',0);
 
 subplot(224);
 hold on;
-fplot(dddqFinal, [0, 1], 'LineWidth', 2);
+fplot(dddqFinal, [0, 1]);
 xlabel("t");
 ylabel('$$\stackrel{...}{q}$$','interpreter','latex','Rotation',0);
 

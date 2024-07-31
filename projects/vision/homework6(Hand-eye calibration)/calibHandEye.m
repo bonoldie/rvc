@@ -45,7 +45,6 @@ for i = 1:N
     R_b_g = Rodrigues(r_b_g);
     T_b_g = [R_b_g, t_b_g; 0,0,0,  1];
 
-  
     %
     T_t_c_list(:,:,i) = T_t_c;
     T_b_g_list(:,:,i) = T_b_g;

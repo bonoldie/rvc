@@ -2,6 +2,9 @@ close all;
 clear;
 clc;
 
+set(0, 'DefaultAxesFontSize', 13);
+set(0, 'DefaultFigurePosition', [0,0,1080,720]);
+
 %   t  q
 vias = [
     0, 0;
@@ -55,19 +58,26 @@ figureTitle = [num2str(size(vias,1)-1) 'th-order multipoint trajectory'];
 figure(1);
 subplot(131);
 hold on;
-fplot(q, [vias([1 end],1)]');
-scatter(vias(:, 1),vias(:, 2));
-title(figureTitle, 'q(t)');
+fplot(q, [vias([1 end],1)]', 'LineWidth', 2);
+scatter(vias(:, 1),vias(:, 2), 'LineWidth', 2);
+xlabel('t');
+ylabel('q', 'Rotation',0);
 
 subplot(132);
 hold on;
-fplot(dq, [vias([1 end],1)]');
-title(figureTitle, 'dq(t)');
+fplot(dq, [vias([1 end],1)]', 'LineWidth', 2);
+xlabel('t');
+ylabel('$$\dot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
 
 subplot(133);
 hold on;
-fplot(ddq, [vias([1 end],1)]');
-title(figureTitle, 'ddq(t)');
+fplot(ddq, [vias([1 end],1)]', 'LineWidth', 2);
+xlabel('t');
+ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
+
+sgtitle(figureTitle);
+saveas(gcf, 'homework_3_4/n-th_order_poly.png');
+
 
 %% interpolating (cubic) polynomials - imposed velocity at path/initial velocity at via points
 
@@ -117,25 +127,33 @@ splines = reshape(struct2array(multipointSol), 4, size(vias, 1)-1).' * [1;t;t^2;
 figure(2);
 subplot(131);
 hold on;
-scatter(vias(:, 1), vias(:, 2));
+scatter(vias(:, 1), vias(:, 2), 'LineWidth', 2);
 for i=1:size(vias, 1)-1
-    fplot(splines(i), [vias(i,1) vias(i+1,1)]);
+    fplot(splines(i), [vias(i,1) vias(i+1,1)], 'LineWidth', 2);
 end
-title('Multipoint splines (euler approximation)', 'q(t)')
+xlabel('t');
+ylabel('q', 'Rotation',0);
 
 subplot(132);
 hold on;
 for i=1:size(vias, 1)-1
-    fplot(gradient(splines(i),t), [vias(i,1) vias(i+1,1)]);
+    fplot(gradient(splines(i),t), [vias(i,1) vias(i+1,1)], 'LineWidth', 2);
 end
-title('Multipoint splines (euler approximation)', 'dq(t)');
+
+xlabel('t');
+ylabel('$$\dot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
 
 subplot(133);
 hold on;
 for i=1:size(vias, 1)-1
-    fplot(gradient(gradient(splines(i),t)), [vias(i,1) vias(i+1,1)]);
+    fplot(gradient(gradient(splines(i),t)), [vias(i,1) vias(i+1,1)], 'LineWidth', 2);
 end
-title('Multipoint splines (euler approximation)', 'ddq(t)');
+
+xlabel('t');
+ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
+
+sgtitle('Multipoint splines (euler approximation)');
+saveas(gcf, 'homework_3_4/euler_splines.png');
 
 %% interpolating (cubic) polynomials - continuous acceleration
 dqi = 2;
@@ -145,9 +163,9 @@ T = [vias(:,1);0] - [0;vias(:,1)];
 T = T(2:end-1);
 
 % Setup the tridiagonal A matrix
-B = zeros(size(vias,1)-2) + diag(T(3:end),-1); 
-B = B + diag(T(1:end-2),1); 
-B = B + diag(2*(T(1:end-1) + T(2:end))); 
+A_matrix = zeros(size(vias,1)-2) + diag(T(3:end),-1); 
+A_matrix = A_matrix + diag(T(1:end-2),1); 
+A_matrix = A_matrix + diag(2*(T(1:end-1) + T(2:end))); 
 
 c = zeros(size(vias,1)-2, 1);
 
@@ -163,7 +181,7 @@ for i=1:size(c,1)
     end
 end
 
-calculated_dq = inv(B) * c;
+calculated_dq = inv(A_matrix) * c;
 
 vias(:,3) = [dqi;calculated_dq;dqf];
 
@@ -199,23 +217,30 @@ splines = reshape(struct2array(multipointSol), 4, size(vias, 1)-1).' * [1;t;t^2;
 figure(3);
 subplot(131);
 hold on;
-scatter(vias(:, 1), vias(:, 2));
+scatter(vias(:, 1), vias(:, 2), 'LineWidth', 2);
 for i=1:size(vias, 1)-1
-    fplot(splines(i), [vias(i,1) vias(i+1,1)]);
+    fplot(splines(i), [vias(i,1) vias(i+1,1)], 'LineWidth', 2);
 end
-title('Multipoint splines (cont. acceleration)', 'q(t)')
+xlabel('t');
+ylabel('q', 'Rotation',0);
 
 subplot(132);
 hold on;
 for i=1:size(vias, 1)-1
-    fplot(gradient(splines(i),t), [vias(i,1) vias(i+1,1)]);
+    fplot(gradient(splines(i),t), [vias(i,1) vias(i+1,1)], 'LineWidth', 2);
 end
-title('Multipoint splines (cont. acceleration)', 'dq(t)');
+
+xlabel('t');
+ylabel('$$\dot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
 
 subplot(133);
 hold on;
 for i=1:size(vias, 1)-1
-    fplot(gradient(gradient(splines(i),t)), [vias(i,1) vias(i+1,1)]);
+    fplot(gradient(gradient(splines(i),t)), [vias(i,1) vias(i+1,1)], 'LineWidth', 2);
 end
-title('Multipoint splines (cont. acceleration)', 'ddq(t)');
 
+xlabel('t');
+ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
+
+sgtitle('Multipoint splines (continuous acceleration)');
+saveas(gcf, 'homework_3_4/continuous_accel_splines.png');

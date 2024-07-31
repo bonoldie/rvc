@@ -2,6 +2,9 @@ close all;
 clear;
 clc;
 
+set(0, 'DefaultAxesFontSize', 13);
+set(0, 'DefaultFigurePosition', [0,0,1080,720]);
+
 % we have to build a trapezoidal velocity trajectory to match a defined motion
 % these are the parameters needed to plan the trajectory (different parameters may be taken into account)
 
@@ -60,24 +63,34 @@ decPlanning = [
 
 planningSolution = solve([accPlanning constPlanning decPlanning]);
 
+disp(planningSolution);
+
 figure(1);
 subplot(131);
 hold on;
-fplot(subs(q_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)]);
-fplot(subs(q_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)]);
-fplot(subs(q_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf]);
+fplot(subs(q_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)], 'LineWidth', 2);
+fplot(subs(q_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)], 'LineWidth', 2);
+fplot(subs(q_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf], 'LineWidth', 2);
 title('Position');
+xlabel("t");
+ylabel("q", 'Rotation', 0);
 
 subplot(132);
 hold on;
-fplot(subs(dq_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)]);
-fplot(subs(dq_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)]);
-fplot(subs(dq_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf]);
+fplot(subs(dq_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)], 'LineWidth', 2);
+fplot(subs(dq_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)], 'LineWidth', 2);
+fplot(subs(dq_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf], 'LineWidth', 2);
 title('Velocity');
+xlabel("t");
+ylabel('$$\dot{q}$$','interpreter','latex', 'Rotation', 0,'fontsize',16);
 
 subplot(133);
 hold on;
-fplot(subs(ddq_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)]);
-fplot(subs(ddq_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)]);
-fplot(subs(ddq_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf]);
+fplot(subs(ddq_acc, [ac0 ac1 ac2], [planningSolution.ac0 planningSolution.ac1 planningSolution.ac2]),[ti double(planningSolution.t1)], 'LineWidth', 2);
+fplot(subs(ddq_const, [co0 co1], [planningSolution.co0 planningSolution.co1]),[double(planningSolution.t1) double(planningSolution.t2)], 'LineWidth', 2);
+fplot(subs(ddq_dec, [de0 de1 de2],[planningSolution.de0 planningSolution.de1 planningSolution.de2]),[double(planningSolution.t2) tf], 'LineWidth', 2);
 title('Acceleration');
+xlabel("t");
+ylabel('$$\ddot{q}$$','interpreter','latex', 'Rotation', 0,'fontsize',16);
+
+saveas(gcf,'homework_2/trap_acc_decel_time.png');

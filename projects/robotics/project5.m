@@ -91,6 +91,7 @@ quiver3([1 0 0]*[circ2Val circ3Val],[0 1 0]*[circ2Val circ3Val],[0 0 1]*[circ2Va
 
 legend('','','','','', 'Linear path', 'Linear path', 'Circular path', 'Circular path', 'Velocity', 'Acceleration');
 
+saveas(gcf, 'homework_5/3d_trajectory.png');
 
 
 
