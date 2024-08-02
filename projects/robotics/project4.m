@@ -52,57 +52,7 @@ ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0);
 
 sgtitle('Smoothing splines');
 
-saveas(gcf,'homework_3_4/smoothing_splines.png');
-
-%%
-% 
-% figure(2);
-% hold on;
-% scatter(instants,q,'o', DisplayName='Via points');
-% 
-% MUs = 0.2:0.2:1;
-% 
-% calculated_splines_coeffs = {};
-% 
-% for i=MUs 
-%     [s, dds] = SmoothSpline(T_vals, q, i);
-%     splineColor = [rand,rand,rand];
-% 
-%     curr_splines_coeffs = zeros(size(T_vals,2), 4);
-% 
-%     for k = 1:size(T_vals,2)
-%         spline_k(t) = s(k) ...
-%           + (((s(k+1) - s(k)) / T_vals(k)) - (dds(k+1) + 2*dds(k)) * T_vals(k)/6) * (t - instants(k)) ...
-%           + (dds(k) / 2) * (t - instants(k)) ^ 2 ...
-%           + ((dds(k+1) - dds(k))/(6*T_vals(k))) * (t - instants(k)) ^ 3;
-% 
-%         % spline_k(t) = ((s(k+1)/T_vals(k))-((T_vals(k)*dds(k+1))/6)) * (t - instants(k)) ...
-%         %               + (((s(k)/T_vals(k))-(T_vals(k)*dds(k)/6))) * (instants(k+1) - t) ...
-%         %               + (dds(k)/(6*T_vals(k))) * (instants(k+1) - t)^3 ...
-%         %               + (dds(k+1)/(6*T_vals(k)))*(t-instants(k))^3;
-% 
-%         curr_splines_coeffs(k,:) = sym2poly(spline_k);
-%         % spline_k(t) = ((dds(k+1) - dds(k))/ (6*T_vals(k)))*(t-instants(k))^3 + (dds(k)/2)*(t-instants(k))^2 + ((s(k+1)-s(k))/T_vals(k) - ((dds(k+1) + 2*dds(k))/6)*T_vals(k)) * (t - instants(k)) + s(k);
-%         dd_spline_k(t) = (dds(k)/T_vals(k))*(instants(k+1)-t) + (dds(k+1)/T_vals(k))*(t-instants(k));
-%         % dd_spline_k(t) = (dds(k+1) * (t - instants(k))^2 + dds(k) * (instants(k) * (instants(k+1) - t))) / T_vals(k);
-% 
-%         subplot(121);
-%         hold on;
-%         fplot(spline_k(t),[instants(k) instants(k+1)],  'Color', splineColor)
-% 
-%         subplot(122);
-%         hold on;
-%         fplot(dd_spline_k(t),[instants(k) instants(k+1)], 'Color', splineColor)
-%     end
-% 
-%     calculated_splines_coeffs{end+1} = curr_splines_coeffs;
-% end
-% 
-% subplot(121);
-% title('Position (Via matrix inversion)')
-% 
-% subplot(122);
-% title('Acceleration')
+% saveas(gcf,'homework_3_4/smoothing_splines.png');
 
 function [s, dds] = SmoothSpline(T_vals, q, mu)
 

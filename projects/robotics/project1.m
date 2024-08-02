@@ -38,7 +38,7 @@ xlabel("t");
 ylabel('$$\dot{q}$$','interpreter','latex','Rotation',0);
 
 sgtitle("Linear trajectory");
-saveas(gcf,'homework_1/linear.png');
+% saveas(gcf,'homework_1/linear.png');
 
 %% parabolic trajectory
 
@@ -93,7 +93,7 @@ ylabel('$$\ddot{q}$$','interpreter','latex','Rotation',0);
 legend("acceleration","deceleration");
 
 sgtitle("Parabolic trajectory");
-saveas(gcf,'homework_1/parabolic.png');
+% saveas(gcf,'homework_1/parabolic.png');
 
 %% cubic trajectory
 
@@ -137,7 +137,7 @@ xlabel("t");
 ylabel('$$\stackrel{...}{q}$$','interpreter','latex','Rotation',0);
 
 sgtitle("Cubic trajectory");
-saveas(gcf,'homework_1/cubic.png');
+% saveas(gcf,'homework_1/cubic.png');
 
 %% 5th-order trajectory
 
@@ -181,7 +181,7 @@ xlabel("t");
 ylabel('$$\stackrel{...}{q}$$','interpreter','latex','Rotation',0);
 
 sgtitle("5th-order trajectory");
-saveas(gcf,'homework_1/5th_order.png');
+% saveas(gcf,'homework_1/5th_order.png');
 
 %% 7th-order trajectory
 
@@ -225,5 +225,5 @@ xlabel("t");
 ylabel('$$\stackrel{...}{q}$$','interpreter','latex','Rotation',0);
 
 sgtitle("7th-order trajectory") 
-saveas(gcf,'homework_1/7th_order.png');
+% saveas(gcf,'homework_1/7th_order.png');
 

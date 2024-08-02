@@ -76,7 +76,7 @@ xlabel('t');
 ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
 
 sgtitle(figureTitle);
-saveas(gcf, 'homework_3_4/n-th_order_poly.png');
+% saveas(gcf, 'homework_3_4/n-th_order_poly.png');
 
 
 %% interpolating (cubic) polynomials - imposed velocity at path/initial velocity at via points
@@ -153,7 +153,7 @@ xlabel('t');
 ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
 
 sgtitle('Multipoint splines (euler approximation)');
-saveas(gcf, 'homework_3_4/euler_splines.png');
+% saveas(gcf, 'homework_3_4/euler_splines.png');
 
 %% interpolating (cubic) polynomials - continuous acceleration
 dqi = 2;
@@ -243,4 +243,4 @@ xlabel('t');
 ylabel('$$\ddot{q}$$','Interpreter','latex', 'Rotation',0,'FontSize', 16);
 
 sgtitle('Multipoint splines (continuous acceleration)');
-saveas(gcf, 'homework_3_4/continuous_accel_splines.png');
+% saveas(gcf, 'homework_3_4/continuous_accel_splines.png');

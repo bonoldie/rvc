@@ -122,4 +122,4 @@ title('Acceleration');
 xlabel("t");
 ylabel('$$\ddot{q}$$','interpreter','latex', 'Rotation', 0,'fontsize',16);
 
-saveas(gcf,'homework_2/trap_max_acc_velocity.png');
+% saveas(gcf,'homework_2/trap_max_acc_velocity.png');

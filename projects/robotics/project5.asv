@@ -2,27 +2,23 @@ close all;
 clear all;
 clc;
 
-set(0, 'DefaultAxesFontSize', 13);
-set(0, 'DefaultFigurePosition', [0,0,1080,720]);
-
 % 3D trajectory
 syms s t;
 
-% x y z
+% t x y z
 vias = [
-  0 0 0;
-  1 0 0;
-  2 1 0;
-  2 1 2;
-  2 0 2;
+  0 0 0 0;
+  1 1 0 0;
+  2 2 1 0;
+  3 2 1 2;
+  4 2 0 2;
 ];
 
 circCenters = [
   1 1 0;
   2 1 1;
 ];
-
-%% 3D trajectory with motion primitives
+%%
 
 linear1 = @(u) repmat(vias(1,:)',1,size(u, 2)) + (vias(2,:) - vias(1,:))'*u;
 linear4 = @(u) repmat(vias(4,:)',1,size(u, 2)) + (vias(5,:) - vias(4,:))'*u;
@@ -96,48 +92,31 @@ quiver3([1 0 0]*[circ2Val circ3Val],[0 1 0]*[circ2Val circ3Val],[0 0 1]*[circ2Va
 
 legend('','','','','', 'Linear path', 'Linear path', 'Circular path', 'Circular path', 'Velocity', 'Acceleration');
 
-text(vias(:,1),vias(:,2)+0.1,vias(:,3)+0.1,cellstr(num2str([1;2;3;4;5]))', "FontWeight","bold", 'FontSize', 15);
-
 % saveas(gcf, 'homework_5/3d_trajectory.png');
 
 
-%% 3D trajectory with polynomial function
-
-instants = [0 1 2 3 4]; 
+%%
 
 A_x = sym('a',[1 size(vias,1)]);
 A_y = sym('a',[1 size(vias,1)]);
 A_z = sym('a',[1 size(vias,1)]);
 
 % Vandermonde matrix
-V = zeros(3, size(vias,1),size(vias,1));
+V = zeros(size(vias,1));
 
 for ax = [1,2,3]
     for i = 1:size(vias,1)
         for j = 1:size(vias,1)
-            V(ax, i, j) = instants(i)^(j-1);
+            V(i, j) = vias(i, 1)^(j-1);
         end    
     end
 end
+% Instead of setup the problem and the run the 'solve' matlab function and
+% can be solved by matrix inversion: A=V^-1*q
+a = inv(V)*vias(:,2);
 
-a_x = inv(squeeze(V(1,:,:)))*vias(:,1);
-a_y = inv(squeeze(V(2,:,:)))*vias(:,2);
-a_z = inv(squeeze(V(3,:,:)))*vias(:,3);
+q = (struct2array(highOrderPolynomialSol) * repelem(t, size(A, 2)).^((1:size(A, 2))-1)')';
 
-traj_x = @(t) (repelem(t, size(A_x, 2)).^((1:size(A_x, 2))-1) * a_x);
-traj_y = @(t) (repelem(t, size(A_y, 2)).^((1:size(A_y, 2))-1) * a_y);
-traj_z = @(t) (repelem(t, size(A_z, 2)).^((1:size(A_z, 2))-1) * a_z);
 
-figure(2);
-view(ax, 3);
-grid on;
-hold on;
-axis equal;
 
-scatter3(vias(:,1),vias(:,2),vias(:,3),LineWidth=3,Marker='*', Color='b', DisplayName='Via points');
-fplot3(traj_x,traj_y,traj_z, [instants(1) instants(end)], LineWidth=2, Color='r', DisplayName='Polynomial path');
-legend();
 
-text(vias(:,1),vias(:,2)+0.1,vias(:,3)+0.1,cellstr(num2str([1;2;3;4;5]))', "FontWeight","bold", 'FontSize', 15);
-
-% saveas(gcf, 'homework_5/3d_poly.png');

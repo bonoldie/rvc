@@ -93,4 +93,4 @@ title('Acceleration');
 xlabel("t");
 ylabel('$$\ddot{q}$$','interpreter','latex', 'Rotation', 0,'fontsize',16);
 
-saveas(gcf,'homework_2/trap_acc_decel_time.png');
+% saveas(gcf,'homework_2/trap_acc_decel_time.png');
