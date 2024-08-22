@@ -44,13 +44,11 @@ plane1_2_O = det([
     [p0 p1 p2]' [1;1;1]
 ]) == 0;
 
-
 theta1_2 = acos(dot(p1_O/r, p2_O/r)); 
 theta2_3 = acos(dot(p2_O/r, p3_O/r)); 
 theta3_1 = acos(dot(p3_O/r, p1_O/r)); 
 
 [B, I]  = sort([theta1_2, theta2_3, theta3_1]);
-
 disp(strcat('To minimize the travel distance we must use the segments ', sprintf(' %i and %i', I(1:2))));
 
 % Great circle poles

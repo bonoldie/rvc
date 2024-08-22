@@ -14,6 +14,8 @@
 clc;clear;
 close all;
 
+homework6;
+
 %% load data
 fid = fopen('cam2target.csv', 'r');
 A =  textscan(fid, '%f,%f,%f,%f,%f,%f,%f');
