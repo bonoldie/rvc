@@ -19,15 +19,15 @@ binImg = bwareaopen(binImg, 1000);
 connComps = bwconncomp(binImg, 8);
 regionprops("table", connComps, "MajorAxisLength", "MinorAxisLength", "Centroid", "Area")
 
-% figure(1);
-% title('Components');
-% 
-% for i=1:1:connComps.NumObjects
-%     subplot(round(sqrt(connComps.NumObjects)),ceil(sqrt(connComps.NumObjects)),i);
-%     componentImg = false(size(binImg));
-%     componentImg(connComps.PixelIdxList{i}) = true;
-%     imshow(componentImg);
-% end
+figure(1);
+title('Components');
+
+for i=1:1:connComps.NumObjects
+    subplot(round(sqrt(connComps.NumObjects)),ceil(sqrt(connComps.NumObjects)),i);
+    componentImg = false(size(binImg));
+    componentImg(connComps.PixelIdxList{i}) = true;
+    imshow(componentImg);
+end
 
 connCompsProps = regionprops(connComps, "Centroid", "MajorAxisLength", "MinorAxisLength", "Area", "Eccentricity", "BoundingBox");
 
@@ -35,11 +35,11 @@ compsRadiuses = mean([cat(1, connCompsProps.MajorAxisLength) cat(1, connCompsPro
 compsArea = sort(cat(1, connCompsProps.Area), "ascend");
 compsCentroids = cat(1, connCompsProps.Centroid);
 
-
+pause(1);
 figure(2);
 imshow(originalImg);
-hold on;
 title("Analysis result");
+hold on;
 
 plot(compsCentroids(:, 1), compsCentroids(:, 2), ".", "MarkerSize", 25);
 

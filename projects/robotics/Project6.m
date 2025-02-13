@@ -122,7 +122,7 @@ zlabel('z');
 
 % saveas(gcf, 'homework_6/3d_trajectory_spherical_surface.png');
 
-if ENABLE_ANIMATION <= 0
+if ENABLE_ANIMATION <= 1
     return;
 end
 

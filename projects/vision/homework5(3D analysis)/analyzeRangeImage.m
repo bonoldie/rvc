@@ -146,7 +146,7 @@ surf(X,Y,Z,  'EdgeColor','r');
 
 planeNormal = cross(planeComponents(:,1),planeComponents(:,2));
 planeNormal = planeNormal ./ norm(planeNormal);
-
+    
 quiver3(centroidLocation(1,1),centroidLocation(1,2),centroidLocation(1,3), planeNormal(1), planeNormal(2), planeNormal(3), "filled", "LineWidth",3,"AutoScaleFactor", 100, Color='b');
 
 p1 = pcRegion.Location(1000, :)';

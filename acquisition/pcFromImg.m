@@ -6,7 +6,7 @@ f = 525;
 u0 = 319.5;
 v0 = 239.5;
 
-img = imread("depth_image.png");
+img = imread("data/0000001-000000000000.png");
 
 pc = zeros(size(img, 1),size(img, 2), 3);
 
